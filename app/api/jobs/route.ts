@@ -22,6 +22,9 @@ export async function POST(req: Request) {
       status: body.status,
       notes: body.notes,
       link: body.link,
+      appliedDate: body.appliedDate
+      ? new Date(body.appliedDate)
+      : undefined,
     },
   });
 
@@ -50,6 +53,9 @@ export async function PUT(req: Request) {
       title: body.title,
       status: body.status,
       notes: body.notes,
+      appliedDate: body.appliedDate
+      ? new Date(body.appliedDate)
+      : undefined,
     },
   });
 

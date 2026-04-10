@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [appliedDate, setAppliedDate] = useState(new Date().toISOString().split("T")[0]);
   const [jobs, setJobs] = useState([]);
   const [company, setCompany] = useState("");
   const [title, setTitle] = useState("");
@@ -33,6 +34,7 @@ export default function Home() {
           title,
           status,
           notes,
+          appliedDate,
         }),
       });
     } else {
@@ -44,6 +46,7 @@ export default function Home() {
           title,
           status,
           notes,
+          appliedDate,
         }),
       });
     }
@@ -53,6 +56,7 @@ export default function Home() {
     setTitle("");
     setStatus("Applied");
     setNotes("");
+    setAppliedDate("");
     setEditingId(null);
   
     fetchJobs();
@@ -73,6 +77,11 @@ export default function Home() {
     setTitle(job.title);
     setStatus(job.status);
     setNotes(job.notes || "");
+
+    // format date for input
+    const formatted = new Date(job.appliedDate)
+    .toISOString()
+    .split("T")[0];
   }
 
 const total = jobs.length;
@@ -104,6 +113,13 @@ const rejected = jobs.filter((j: any) => j.status === "Rejected").length;
           className="border p-2 w-full"
         />
 
+        <input
+          type="date"
+          value={appliedDate}
+          onChange={(e) => setAppliedDate(e.target.value)}
+          className="border p-2 w-full"
+        />
+        
         <textarea
           placeholder="Notes"
           value={notes}
@@ -135,7 +151,10 @@ const rejected = jobs.filter((j: any) => j.status === "Rejected").length;
       <div>{job.title}</div>
       <div className="text-sm mt-1">{job.notes}</div>
       <div className="text-sm text-gray-500">{job.status}</div>
-    </div>
+      </div>
+        <div className="text-sm text-gray-500">
+        {new Date(job.appliedDate).toLocaleDateString()}
+      </div>
     <button
     onClick={() => startEdit(job)}
     className="text-blue-500"
