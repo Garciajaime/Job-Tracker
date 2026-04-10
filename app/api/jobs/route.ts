@@ -27,3 +27,14 @@ export async function POST(req: Request) {
 
   return NextResponse.json(job);
 }
+
+// DELETE job
+export async function DELETE(req: Request) {
+  const { id } = await req.json();
+
+  await prisma.job.delete({
+    where: { id },
+  });
+
+  return NextResponse.json({ success: true });
+}
