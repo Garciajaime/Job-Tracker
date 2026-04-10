@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [jobs, setJobs] = useState([]);
   const [company, setCompany] = useState("");
   const [title, setTitle] = useState("");
@@ -19,24 +20,41 @@ export default function Home() {
     fetchJobs();
   }, []);
 
-  async function addJob(e: any) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
-
-    await fetch("/api/jobs", {
-      method: "POST",
-      body: JSON.stringify({
-        company,
-        title,
-        status,
-        notes,
-      }),
-    });
-
+  
+    if (editingId) {
+      // UPDATE
+      await fetch("/api/jobs", {
+        method: "PUT",
+        body: JSON.stringify({
+          id: editingId,
+          company,
+          title,
+          status,
+          notes,
+        }),
+      });
+    } else {
+      // CREATE
+      await fetch("/api/jobs", {
+        method: "POST",
+        body: JSON.stringify({
+          company,
+          title,
+          status,
+          notes,
+        }),
+      });
+    }
+  
+    // reset form
     setCompany("");
     setTitle("");
-    setNotes("");
     setStatus("Applied");
-
+    setNotes("");
+    setEditingId(null);
+  
     fetchJobs();
   }
 
@@ -47,6 +65,14 @@ export default function Home() {
     });
   
     fetchJobs();
+  }
+
+  function startEdit(job: any) {
+    setEditingId(job.id);
+    setCompany(job.company);
+    setTitle(job.title);
+    setStatus(job.status);
+    setNotes(job.notes || "");
   }
 
 const total = jobs.length;
@@ -63,7 +89,7 @@ const rejected = jobs.filter((j: any) => j.status === "Rejected").length;
       <div className="border p-3">Offers: {offers}</div>
       <div className="border p-3">Rejected: {rejected}</div>
       </div>
-      <form onSubmit={addJob} className="space-y-2 mb-6">
+      <form onSubmit={handleSubmit} className="space-y-2 mb-6">
         <input
           placeholder="Company"
           value={company}
@@ -97,7 +123,7 @@ const rejected = jobs.filter((j: any) => j.status === "Rejected").length;
         </select>
 
         <button className="bg-black text-white px-4 py-2">
-          Add Job
+            {editingId ? "Update Job" : "Add Job"}
         </button>
       </form>
 
@@ -110,7 +136,12 @@ const rejected = jobs.filter((j: any) => j.status === "Rejected").length;
       <div className="text-sm mt-1">{job.notes}</div>
       <div className="text-sm text-gray-500">{job.status}</div>
     </div>
-
+    <button
+    onClick={() => startEdit(job)}
+    className="text-blue-500"
+    >
+    Edit
+    </button>
     <button
       onClick={() => deleteJob(job.id)}
       className="text-red-500"

@@ -38,3 +38,20 @@ export async function DELETE(req: Request) {
 
   return NextResponse.json({ success: true });
 }
+
+// UPDATE job
+export async function PUT(req: Request) {
+  const body = await req.json();
+
+  const updated = await prisma.job.update({
+    where: { id: body.id },
+    data: {
+      company: body.company,
+      title: body.title,
+      status: body.status,
+      notes: body.notes,
+    },
+  });
+
+  return NextResponse.json(updated);
+}
