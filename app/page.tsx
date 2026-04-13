@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Briefcase } from "lucide-react";
 
 export default function Home() {
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -12,6 +13,8 @@ export default function Home() {
   const [status, setStatus] = useState("Applied");
   const statuses = ["Applied", "Interview", "Offer", "Rejected"];
   const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   async function fetchJobs() {
     const res = await fetch("/api/jobs");
@@ -22,6 +25,20 @@ export default function Home() {
   useEffect(() => {
     fetchJobs();
   }, []);
+
+  useEffect(() => {
+    if (!search) {
+      setSuggestions([]);
+      return;
+    }
+  
+    const matches = jobs.filter((job: any) =>
+      job.company.toLowerCase().includes(search.toLowerCase()) ||
+      job.title.toLowerCase().includes(search.toLowerCase())
+    );
+  
+    setSuggestions(matches.slice(0, 5));
+  }, [search, jobs]);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
@@ -113,14 +130,34 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
 }, {});
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Job Tracker</h1>
-      <div className="grid grid-cols-2 gap-4 mb-6">
-      <div className="border p-3">Total: {total}</div>
-      <div className="border p-3">Interviews: {interviews}</div>
-      <div className="border p-3">Offers: {offers}</div>
-      <div className="border p-3">Rejected: {rejected}</div>
-      </div>
+<div className="p-6 max-w-xl mx-auto">
+    {/* HEADER */}
+    <div className="flex items-center justify-center gap-2 border-b border-gray-800 pb-3">
+      <Briefcase className="w-6 h-6 text-blue-400" />
+      <h1 className="text-2xl font-bold">Job Tracker</h1>
+    </div>
+  {/* Dashboard */}
+  <div className="grid grid-cols-2 gap-4 mb-6">
+  <div className="rounded-xl p-4 bg-gray-900 border border-gray-800">
+  <div className="text-sm text-gray-400">Total</div>
+  <div className="text-xl font-bold text-white">{total}</div>
+  </div>
+
+  <div className="rounded-xl p-4 bg-blue-100">
+    <div className="text-sm text-blue-700">Interviews</div>
+    <div className="text-xl font-bold text-blue-900">{interviews}</div>
+  </div>
+
+  <div className="rounded-xl p-4 bg-green-100">
+    <div className="text-sm text-green-700">Offers</div>
+    <div className="text-xl font-bold text-green-900">{offers}</div>
+  </div>
+
+  <div className="rounded-xl p-4 bg-red-100">
+    <div className="text-sm text-red-700">Rejected</div>
+    <div className="text-xl font-bold text-red-900">{rejected}</div>
+  </div>
+  </div>
       <form onSubmit={handleSubmit} className="space-y-2 mb-6">
         <input
           placeholder="Company"
@@ -165,12 +202,36 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
             {editingId ? "Update Job" : "Add Job"}
         </button>
       </form>
-      <input
-            placeholder="Search jobs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="border p-2 w-full mb-4"
-      />
+<div className="mb-4">
+  <input
+    placeholder="Search jobs..."
+    value={search}
+    onChange={(e) => {
+      setSearch(e.target.value);
+      setShowSuggestions(true);
+    }}
+    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+    className="border p-2 w-full"
+  />
+
+{showSuggestions && suggestions.length > 0 && (
+  <div className="absolute bg-white border w-full mt-1 z-10 text-gray-900 shadow">
+    {suggestions.map((job, i) => (
+      <div
+        key={i}
+        onClick={() => {
+          setSearch(job.company); // OR `${job.company} ${job.title}`
+          setShowSuggestions(false);
+        }}
+        className="p-2 hover:bg-gray-100 cursor-pointer"
+      >
+        <span className="font-semibold">{job.company}</span>
+        <span className="text-gray-500"> — {job.title}</span>
+      </div>
+    ))}
+  </div>
+)}
+</div>
 
 <div className="space-y-6">
   {statuses.map((status) => (
@@ -178,11 +239,10 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
       <h2 className="font-bold text-lg mb-2">{status}</h2>
 
       <div className="space-y-2">
-        {groupedJobs[status]
-          .filter((job: any) =>
-            job.company.toLowerCase().includes(search.toLowerCase()) ||
-            job.title.toLowerCase().includes(search.toLowerCase())
-          )
+        {groupedJobs[status].filter((job: any) => {
+  const text = `${job.company} ${job.title}`.toLowerCase();
+            return text.includes(search.toLowerCase());
+          })
           .map((job: any) => (
             <div key={job.id} className="border p-3 flex justify-between">
               <div>
