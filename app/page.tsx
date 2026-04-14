@@ -130,7 +130,9 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
 }, {});
 
   return (
-<div className="p-6 max-w-xl mx-auto">
+<div className="h-screen flex">
+      {/* ================= LEFT SIDE ================= */}
+  <div className="w-1/3 border-r border-gray-800 p-6 overflow-y-auto">
     {/* HEADER */}
     <div className="flex items-center justify-center gap-2 border-b border-gray-800 pb-3">
       <Briefcase className="w-6 h-6 text-blue-400" />
@@ -157,6 +159,8 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
     <div className="text-sm text-red-700">Rejected</div>
     <div className="text-xl font-bold text-red-900">{rejected}</div>
   </div>
+
+  {/* FORM */}
   </div>
       <form onSubmit={handleSubmit} className="space-y-2 mb-6">
         <input
@@ -202,6 +206,12 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
             {editingId ? "Update Job" : "Add Job"}
         </button>
       </form>
+</div>
+
+  {/* ================= RIGHT SIDE ================= */}
+  <div className="w-2/3 p-6 overflow-y-auto">
+
+{/* SEARCH */}
 <div className="mb-4">
   <input
     placeholder="Search jobs..."
@@ -233,7 +243,8 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
 )}
 </div>
 
-<div className="space-y-6">
+{/* Job List */}
+  <div className="space-y-6">
   {statuses.map((status) => (
     <div key={status}>
       <h2 className="font-bold text-lg mb-2">{status}</h2>
@@ -281,5 +292,6 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
   ))}
 </div>
     </div>
+</div>
   );
 }
