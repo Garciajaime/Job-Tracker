@@ -255,92 +255,120 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
 
 {/* Job List */}
 <div className="space-y-8">
-  {statuses.map((status) => (
-    <div key={status}>
-      <h2 className="font-semibold text-lg mb-3">{status}</h2>
-      <div className="space-y-3">
-        {groupedJobs[status]
-          .filter((job: any) => {
-            const text = `${job.company} ${job.title}`.toLowerCase();
-            return text.includes(search.toLowerCase());
-          })
-          .map((job: any) => (
-            <div
-              key={job.id}
-              className="border border-gray-800 rounded-xl p-4 flex justify-between items-start hover:bg-gray-900/40 transition"
-            >
-              {/* LEFT SIDE */}
-              <div className="space-y-1 max-w-[70%]">
-                <div className="font-semibold text-base">
-                  {job.company}
-                </div>
+  {(() => {
+    // check if ANY jobs exist after filtering
+    const hasAnyJobs = statuses.some((status) =>
+      groupedJobs[status]?.some((job: any) => {
+        const text = `${job.company} ${job.title}`.toLowerCase();
+        return text.includes(search.toLowerCase());
+      })
+    );
 
-                <div className="text-sm text-gray-400">
-                  {job.title}
-                </div>
+    if (!hasAnyJobs) {
+      return (
+        <div className="text-center text-gray-500 py-10 border border-gray-800 rounded-xl">
+          No jobs listed currently
+        </div>
+      );
+    }
 
-                {job.notes && (
-                  <div className="text-sm text-gray-500 line-clamp-2">
-                    {job.notes}
-                  </div>
-                )}
+    return statuses.map((status) => {
+      const filteredJobs = groupedJobs[status].filter((job: any) => {
+        const text = `${job.company} ${job.title}`.toLowerCase();
+        return text.includes(search.toLowerCase());
+      });
 
+      return (
+        <div key={status}>
+          <h2 className="font-semibold text-lg mb-3">{status}</h2>
+
+          <div className="space-y-3">
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job: any) => (
                 <div
-                  className={`inline-block mt-2 px-2 py-1 text-xs rounded-md ${getStatusColor(
-                    job.status
-                  )}`}
+                  key={job.id}
+                  className="border border-gray-800 rounded-xl p-4 flex justify-between items-start hover:bg-gray-900/40 transition"
                 >
-                  {job.status}
-                </div>
-              </div>
+                  {/* LEFT SIDE */}
+                  <div className="space-y-1 max-w-[70%]">
+                    <div className="font-semibold text-base">
+                      {job.company}
+                    </div>
 
-              {/* RIGHT SIDE */}
-              <div className="text-right text-sm space-y-1">
-                <div className="text-gray-500">
-                  {new Date(job.appliedDate).toLocaleDateString()}
-                </div>
+                    <div className="text-sm text-gray-400">
+                      {job.title}
+                    </div>
 
-                <button
-                  onClick={() => startEdit(job)}
-                  className="text-blue-400 hover:underline block"
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => deleteJob(job.id)}
-                  className="text-red-400 hover:underline block"
-                >
-                  Delete
-                </button>
-                 {/* Days since applied component */}
-                {(() => {
-                    const days = getDaysSince(job.appliedDate);
-
-                    return (
-                      <div
-                        className={`text-xs mt-1 ${
-                          days > 14
-                            ? "text-red-400"
-                            : days > 7
-                            ? "text-yellow-400"
-                            : "text-gray-500"
-                        }`}
-                      >
-                        {days === 0
-                          ? "Applied today"
-                          : days === 1
-                          ? "Applied 1 day ago"
-                          : `Applied ${days} days ago`}
+                    {job.notes && (
+                      <div className="text-sm text-gray-500 line-clamp-2">
+                        {job.notes}
                       </div>
-                    );
-                  })()}
+                    )}
+
+                    <div
+                      className={`inline-block mt-2 px-2 py-1 text-xs rounded-md ${getStatusColor(
+                        job.status
+                      )}`}
+                    >
+                      {job.status}
+                    </div>
+                  </div>
+
+                  {/* RIGHT SIDE */}
+                  <div className="text-right text-sm space-y-1">
+                    <div className="text-gray-500">
+                      {new Date(job.appliedDate).toLocaleDateString()}
+                    </div>
+
+                    <button
+                      onClick={() => startEdit(job)}
+                      className="text-blue-400 hover:underline block"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => deleteJob(job.id)}
+                      className="text-red-400 hover:underline block"
+                    >
+                      Delete
+                    </button>
+
+                    {/* Days since applied component */}
+                    {(() => {
+                      const days = getDaysSince(job.appliedDate);
+
+                      return (
+                        <div
+                          className={`text-xs mt-1 ${
+                            days > 14
+                              ? "text-red-400"
+                              : days > 7
+                              ? "text-yellow-400"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {days === 0
+                            ? "Applied today"
+                            : days === 1
+                            ? "Applied 1 day ago"
+                            : `Applied ${days} days ago`}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 italic">
+                No jobs in this section
               </div>
-            </div>
-          ))}
-      </div>
-    </div>
-  ))}
+            )}
+          </div>
+        </div>
+      );
+    });
+  })()}
 </div>
     </div>
 </div>
