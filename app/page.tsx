@@ -244,43 +244,63 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
 </div>
 
 {/* Job List */}
-  <div className="space-y-6">
+<div className="space-y-8">
   {statuses.map((status) => (
     <div key={status}>
-      <h2 className="font-bold text-lg mb-2">{status}</h2>
+      <h2 className="font-semibold text-lg mb-3">{status}</h2>
 
-      <div className="space-y-2">
-        {groupedJobs[status].filter((job: any) => {
-  const text = `${job.company} ${job.title}`.toLowerCase();
+      <div className="space-y-3">
+        {groupedJobs[status]
+          .filter((job: any) => {
+            const text = `${job.company} ${job.title}`.toLowerCase();
             return text.includes(search.toLowerCase());
           })
           .map((job: any) => (
-            <div key={job.id} className="border p-3 flex justify-between">
-              <div>
-                <div className="font-semibold">{job.company}</div>
-                <div>{job.title}</div>
-                <div className="text-sm mt-1">{job.notes}</div>
+            <div
+              key={job.id}
+              className="border border-gray-800 rounded-xl p-4 flex justify-between items-start hover:bg-gray-900/40 transition"
+            >
+              {/* LEFT SIDE */}
+              <div className="space-y-1 max-w-[70%]">
+                <div className="font-semibold text-base">
+                  {job.company}
+                </div>
 
-                <div className={`inline-block px-2 py-1 text-sm rounded ${getStatusColor(job.status)}`}>
+                <div className="text-sm text-gray-400">
+                  {job.title}
+                </div>
+
+                {job.notes && (
+                  <div className="text-sm text-gray-500 line-clamp-2">
+                    {job.notes}
+                  </div>
+                )}
+
+                <div
+                  className={`inline-block mt-2 px-2 py-1 text-xs rounded-md ${getStatusColor(
+                    job.status
+                  )}`}
+                >
                   {job.status}
                 </div>
               </div>
 
-              <div className="text-right space-y-2">
-                <div className="text-sm text-gray-500">
+              {/* RIGHT SIDE */}
+              <div className="text-right text-sm space-y-1">
+                <div className="text-gray-500">
                   {new Date(job.appliedDate).toLocaleDateString()}
                 </div>
 
                 <button
                   onClick={() => startEdit(job)}
-                  className="text-blue-500 block"
+                  className="text-blue-400 hover:underline block"
                 >
                   Edit
                 </button>
 
                 <button
                   onClick={() => deleteJob(job.id)}
-                  className="text-red-500 block"
+                  className="text-red-400 hover:underline block"
                 >
                   Delete
                 </button>
