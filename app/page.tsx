@@ -120,6 +120,16 @@ export default function Home() {
     }
   }
 
+  function getDaysSince(dateString: string) {
+    const applied = new Date(dateString);
+    const today = new Date();
+  
+    const diffTime = today.getTime() - applied.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+    return diffDays;
+  }
+
 const total = jobs.length;
 const interviews = jobs.filter((j: any) => j.status === "Interview").length;
 const offers = jobs.filter((j: any) => j.status === "Offer").length;
@@ -248,7 +258,6 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
   {statuses.map((status) => (
     <div key={status}>
       <h2 className="font-semibold text-lg mb-3">{status}</h2>
-
       <div className="space-y-3">
         {groupedJobs[status]
           .filter((job: any) => {
@@ -304,6 +313,28 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
                 >
                   Delete
                 </button>
+                 {/* Days since applied component */}
+                {(() => {
+                    const days = getDaysSince(job.appliedDate);
+
+                    return (
+                      <div
+                        className={`text-xs mt-1 ${
+                          days > 14
+                            ? "text-red-400"
+                            : days > 7
+                            ? "text-yellow-400"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {days === 0
+                          ? "Applied today"
+                          : days === 1
+                          ? "Applied 1 day ago"
+                          : `Applied ${days} days ago`}
+                      </div>
+                    );
+                  })()}
               </div>
             </div>
           ))}
