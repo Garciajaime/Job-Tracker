@@ -17,9 +17,9 @@ A simple and efficient job tracking web application built to help manage job app
 * **Database:** SQLite
 * **ORM:** Prisma
 
-## 📸 Screenshots
+## 📸 Screenshot
 
-
+<img width="1240" height="628" alt="Screen Shot 2026-04-15 at 2 32 24 PM" src="https://github.com/user-attachments/assets/55796ed5-cf2a-42a3-9acb-97819022cc07" />
 
 ## 📦 Installation
 
