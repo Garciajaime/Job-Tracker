@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Job Tracker App
 
-## Getting Started
+A simple and efficient job tracking web application built to help manage job applications throughout the job search process.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+* Full CRUD functionality (Create, Read, Update, Delete)
+* Track job applications by status (e.g., Applied, Interview, Offer, Rejected)
+* Add details like company name, job title, and application date
+* Clean and minimal UI for easy use
+* Local database storage using SQLite
+
+## 🛠️ Tech Stack
+
+* **Frontend & Backend:** Next.js
+* **Language:** TypeScript
+* **Database:** SQLite
+* **ORM:** Prisma
+
+## 📸 Screenshots
+
+
+
+## 📦 Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/job-tracker.git
+   ```
+
+2. Navigate into the project directory:
+
+   ```bash
+   cd job-tracker
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+4. Set up the database:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+5. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open in browser:
+
+   ```
+   http://localhost:3000
+   ```
+
+## 🧠 How It Works
+
+This app allows users to manage job applications through a simple interface. Jobs are stored in a SQLite database and accessed via Prisma. The frontend is built using Next.js with TypeScript, enabling a full-stack experience within a single framework.
+
+Users can:
+
+* Add new job applications
+* Edit existing entries
+* Delete jobs
+* View all applications organized by status
+
+## 📁 Project Structure
+
+```
+/app        → Next.js app directory (routes & pages)
+/prisma     → Prisma schema and migrations
+/public     → Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔮 Future Improvements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* Add authentication (user accounts)
+* Deploy to production (Vercel + hosted DB)
+* Add notifications/reminders for follow-ups
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📌 Why I Built This
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+I built this project to improve my full-stack development skills and create a practical tool for managing job applications during my own job search.

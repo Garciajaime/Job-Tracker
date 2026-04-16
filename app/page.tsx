@@ -98,9 +98,8 @@ export default function Home() {
     setNotes(job.notes || "");
 
     // format date for input
-    const formatted = new Date(job.appliedDate)
-    .toISOString()
-    .split("T")[0];
+    const [year, month, day] = job.appliedDate.split("T")[0].split("-");
+    const formatted = `${year}-${month}-${day}`;
 
     setAppliedDate(formatted);
   }
@@ -121,11 +120,17 @@ export default function Home() {
   }
 
   function getDaysSince(dateString: string) {
-    const applied = new Date(dateString);
+    const [year, month, day] = dateString.split("T")[0].split("-");
+  
+    const applied = new Date(Number(year), Number(month) - 1, Number(day));
     const today = new Date();
   
+    // ✅ normalize both to midnight 
+    applied.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+  
     const diffTime = today.getTime() - applied.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
   
     return diffDays;
   }
@@ -240,7 +245,7 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
       <div
         key={i}
         onClick={() => {
-          setSearch(job.company); // OR `${job.company} ${job.title}`
+          setSearch(job.company); 
           setShowSuggestions(false);
         }}
         className="p-2 hover:bg-gray-100 cursor-pointer"
@@ -315,9 +320,9 @@ const groupedJobs = statuses.reduce((acc: any, status) => {
                   </div>
 
                   {/* RIGHT SIDE */}
-                  <div className="text-right text-sm space-y-1">
+                  <div className="flex flex-col items-end text-sm gap-1 min-w-[120px]">
                     <div className="text-gray-500">
-                      {new Date(job.appliedDate).toLocaleDateString()}
+                      {job.appliedDate.split("T")[0]}
                     </div>
 
                     <button
